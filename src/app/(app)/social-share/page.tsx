@@ -28,7 +28,7 @@ const socialFormats = {
     }, [selectedFormat, uploadedImage])
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+        const file = event.target.files?.[0];//single file
         if(!file) return;
         setIsUploading(true);
         const formData = new FormData();
@@ -55,22 +55,24 @@ const socialFormats = {
     };
 
     const handleDownload = () => {
-        if(!imageRef.current) return;
-
-        fetch(imageRef.current.src)
-        .then((response) => response.blob())
-        .then((blob) => {
+        if(!imageRef.current) return; 
+        // using fetch to hack or scrap
+        fetch(imageRef.current.src)//source of image
+        .then((response) => response.blob())// download
+        .then((blob) => {// blob is binary object
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement("a");
             link.href = url;
+            //link.download="image.png"
             link.download = `${selectedFormat
           .replace(/\s+/g, "_")
           .toLowerCase()}.png`;
+          //cleanup
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
-            document.body.removeChild(link);
+           
         })
     }
 
@@ -128,6 +130,7 @@ const socialFormats = {
                           <span className="loading loading-spinner loading-lg"></span>
                         </div>
                       )}
+                      {/* Next cloudinary magic */}
                       <CldImage
                         width={socialFormats[selectedFormat].width}
                         height={socialFormats[selectedFormat].height}
@@ -138,7 +141,7 @@ const socialFormats = {
                         aspectRatio={socialFormats[selectedFormat].aspectRatio}
                         gravity='auto'
                         ref={imageRef}
-                        onLoad={() => setIsTransforming(false)}
+                        onLoad={() => setIsTransforming(false)} 
                         />
                     </div>
                   </div>
